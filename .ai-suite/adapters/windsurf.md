@@ -1,0 +1,85 @@
+# WINDSURF ADAPTER
+# PURPOSE: Adapter template for Windsurf IDE — points to canonical rule files in /.ai-suite/
+# LOAD WHEN: Setting up the AI rules suite in a project using Windsurf (Codeium)
+
+---
+
+## Setup Instructions
+
+1. Create `.windsurfrules` in the project root
+2. Copy the template below into `.windsurfrules`
+3. Windsurf reads `.windsurfrules` for project-specific AI instructions
+
+---
+
+## .windsurfrules Template
+
+```markdown
+# Windsurf AI — Project Rules
+
+## Rule System
+This project uses a modular AI rules suite in `.ai-suite/`.
+At the start of every session, read `.ai-suite/MASTER.md` for the complete rule index.
+
+## Mandatory: Security
+ALWAYS read and enforce `.ai-suite/core/security.md`.
+Security rules are non-negotiable and apply to every session.
+
+## Session Start
+1. Read `.ai-suite/MASTER.md` — understand available rule files
+2. Read `.ai-suite/core/security.md` — security rules (ALWAYS)
+3. Follow `.ai-suite/workflows/session-start.md` — session initialization
+4. Check `dev-log.md` — understand prior session context
+5. Load relevant phase files based on the user's task
+
+## Core Rules (Always Active)
+- `.ai-suite/core/security.md` — Security controls and OWASP checklist
+- `.ai-suite/core/code-quality.md` — Naming, function design, file organization
+- `.ai-suite/core/error-handling.md` — Error taxonomy, logging, retry patterns
+
+## Phase Rules (Load by Task)
+Based on the task type, load from `.ai-suite/phases/`:
+- New project → `01-project-init.md`
+- Requirements → `02-requirements.md`
+- Architecture → `03-system-design.md`
+- Database → `04-database.md`
+- API → `05-api-design.md`
+- Frontend → `06-frontend.md`
+- Backend → `07-backend.md`
+- Testing → `08-testing.md`
+- CI/CD → `09-cicd.md`
+- Monitoring → `10-observability.md`
+- Performance → `11-performance.md`
+- Maintenance → `12-maintenance.md`
+- Documentation → `13-documentation.md`
+
+## Before Delivering Code
+Run through ALL gates in `.ai-suite/workflows/review-gate.md`:
+1. Security gate (10 questions) — BLOCKING if failed
+2. Quality gate (10 questions)
+3. Testing gate (10 questions)
+4. Performance gate (5 questions)
+5. Documentation gate (5 questions)
+Flag ALL failures to the user. Never silently skip.
+
+## Session End
+Follow `.ai-suite/workflows/task-handoff.md` to preserve context.
+
+## Non-Negotiable Rules
+- Never hardcode secrets — use environment variables
+- Always use parameterized queries — prevent SQL injection
+- Validate all inputs server-side — client validation is for UX only
+- Handle errors explicitly — no swallowed exceptions
+- No code delivery with known security vulnerabilities
+```
+
+---
+
+## Windsurf-Specific Notes
+
+- Windsurf reads `.windsurfrules` from the project root automatically
+- Windsurf supports Cascade (agentic AI) and autocomplete modes
+- Rules apply to both Cascade and manual invocations
+- Keep `.windsurfrules` concise — point to `.ai-suite/` for detailed rules
+- Windsurf supports multi-file editing — reference phase files for specific tasks
+- Use Windsurf's memory feature for persistent context across sessions

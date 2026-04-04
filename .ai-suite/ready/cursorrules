@@ -1,0 +1,49 @@
+# AI Rules — Powered by .ai-suite
+
+## Session Initialization
+At the start of every session:
+1. Read `.ai-suite/MASTER.md` to understand the rule system
+2. ALWAYS load `.ai-suite/core/security.md` — no exceptions
+3. Read `.ai-suite/workflows/session-start.md` and follow its instructions
+4. Based on my first message, load the appropriate phase files from MASTER.md
+
+## Core Rules (Always Active)
+- Follow all rules in `.ai-suite/core/security.md` — security is non-negotiable
+- Follow all rules in `.ai-suite/core/code-quality.md` when writing any code
+- Follow all rules in `.ai-suite/core/error-handling.md` when handling errors
+
+## Before Delivering Code
+- Run through `.ai-suite/workflows/review-gate.md` — all 5 gates must pass
+- Flag any gate failures to me before delivering code
+- Never silently skip a review gate item
+
+## Phase-Specific Rules
+Load phase files from `.ai-suite/phases/` based on the task:
+- Starting a new project → `01-project-init.md`
+- Database work → `04-database.md`
+- API work → `05-api-design.md`
+- Frontend work → `06-frontend.md`
+- Backend work → `07-backend.md`
+- Writing tests → `08-testing.md`
+- CI/CD setup → `09-cicd.md`
+- Monitoring/logging → `10-observability.md`
+- Performance work → `11-performance.md`
+- Refactoring → `12-maintenance.md`
+- Documentation → `13-documentation.md`
+
+## Session End
+Follow `.ai-suite/workflows/task-handoff.md` to save context for the next session.
+
+## Non-Negotiable Rules
+- NEVER hardcode secrets — use environment variables
+- NEVER concatenate strings in SQL queries — use parameterized queries
+- NEVER expose stack traces or internal errors to users
+- ALWAYS validate all user input server-side
+- ALWAYS handle errors explicitly — no swallowed exceptions
+
+## Project-Specific Configuration
+<!-- Add your project-specific rules below this line -->
+<!-- Example: -->
+<!-- - This project uses Next.js 14 with App Router -->
+<!-- - Use PostgreSQL via Prisma ORM -->
+<!-- - All API routes go in src/app/api/ -->
