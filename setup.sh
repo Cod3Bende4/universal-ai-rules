@@ -9,6 +9,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SUITE_DIR="$SCRIPT_DIR/.ai-suite"
 READY_DIR="$SUITE_DIR/ready"
 
+# Marker written into existing adapter files — prevents double-appending on re-runs
+SUITE_MARKER="<!-- ai-rules-suite -->"
+
 # Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -168,12 +171,33 @@ install_suite_directory() {
         print_warn ".ai-suite/ already exists — running in UPDATE mode."
         print_info "Standard suite files will be updated. Your custom rule files will be preserved."
         echo ""
+
+        # Fix 2: Detect which standard files have local modifications that will be overwritten
+        CHANGED_FILES=()
+        while IFS= read -r -d '' src_file; do
+            rel="${src_file#$SUITE_DIR/}"
+            dest="$TARGET_DIR/.ai-suite/$rel"
+            if [ -f "$dest" ] && ! diff -q "$src_file" "$dest" > /dev/null 2>&1; then
+                CHANGED_FILES+=("$rel")
+            fi
+        done < <(find "$SUITE_DIR" -type f -print0)
+
+        if [ ${#CHANGED_FILES[@]} -gt 0 ]; then
+            echo -e "  ${YELLOW}The following standard files have local changes that will be overwritten:${NC}"
+            for f in "${CHANGED_FILES[@]}"; do
+                echo -e "  ${DIM}  - .ai-suite/$f${NC}"
+            done
+            echo ""
+            echo -e "  ${DIM}  Tip: Put your custom rules in NEW files (e.g. .ai-suite/core/my-rules.md)${NC}"
+            echo -e "  ${DIM}  and add them to MASTER.md — they will never be overwritten.${NC}"
+            echo ""
+        fi
+
         read -rp "$(echo -e "${YELLOW}Proceed with update? [Y/n]:${NC} ")" overwrite
         if [[ "$overwrite" =~ ^[Nn]$ ]]; then
             print_info "Skipping .ai-suite/ update."
             return
         fi
-        # Safe merge: copies into existing dir, overwrites standard files, keeps custom files
         cp -r "$SUITE_DIR/." "$TARGET_DIR/.ai-suite/"
         print_done ".ai-suite/ updated (merged — custom files preserved)"
     else
@@ -182,15 +206,31 @@ install_suite_directory() {
     fi
 }
 
-install_cursor_single() {
-    local target="$TARGET_DIR/.cursorrules"
+# Fix 3: Shared helper — creates adapter file if new, appends suite pointer if custom content exists
+# Uses SUITE_MARKER for idempotency — re-running never double-appends.
+_integrate_or_create() {
+    local target="$1"   # full destination path
+    local source="$2"   # fresh template from ready/
+    local label="$3"    # display name for output
+
     if [ -f "$target" ]; then
-        print_warn ".cursorrules already exists."
-        read -rp "$(echo -e "${YELLOW}Overwrite? [y/N]:${NC} ")" ow
-        [[ ! "$ow" =~ ^[Yy]$ ]] && return
+        if grep -qF "$SUITE_MARKER" "$target" 2>/dev/null; then
+            print_info "$label: suite already integrated — skipping."
+        else
+            print_warn "$label: existing file with custom content found."
+            print_info "Appending suite rules pointer — your existing content is preserved."
+            printf '\n\n---\n## %s AI Rules Suite\n%s\nThis project uses the Universal AI Rules & Skills Suite.\nAt the start of every session:\n  1. Read `.ai-suite/MASTER.md` — the routing table for all rules\n  2. Match your task to a task type and load the listed files\n  3. Always load `core/security.md` — no exceptions\n  4. Run `workflows/session-start.md` boot sequence\n' \
+                '🛡️' "$SUITE_MARKER" >> "$target"
+            print_done "$label: suite block appended"
+        fi
+    else
+        cp "$source" "$target"
+        print_done "Created $label"
     fi
-    cp "$READY_DIR/cursorrules" "$target"
-    print_done "Created .cursorrules"
+}
+
+install_cursor_single() {
+    _integrate_or_create "$TARGET_DIR/.cursorrules" "$READY_DIR/cursorrules" ".cursorrules"
 }
 
 install_cursor_multi() {
@@ -198,66 +238,37 @@ install_cursor_multi() {
     mkdir -p "$rules_dir"
     for mdc_file in "$READY_DIR"/cursor-rules/*.mdc; do
         [ -f "$mdc_file" ] || continue
-        local basename=$(basename "$mdc_file")
-        cp "$mdc_file" "$rules_dir/$basename"
-        print_done "Created .cursor/rules/$basename"
+        local bname
+        bname=$(basename "$mdc_file")
+        local dest="$rules_dir/$bname"
+        if [ -f "$dest" ] && grep -qF "$SUITE_MARKER" "$dest" 2>/dev/null; then
+            print_info ".cursor/rules/$bname: already up to date — skipping."
+        else
+            cp "$mdc_file" "$dest"
+            print_done "Created/updated .cursor/rules/$bname"
+        fi
     done
 }
 
 install_claude() {
-    local target="$TARGET_DIR/CLAUDE.md"
-    if [ -f "$target" ]; then
-        print_warn "CLAUDE.md already exists."
-        read -rp "$(echo -e "${YELLOW}Overwrite? [y/N]:${NC} ")" ow
-        [[ ! "$ow" =~ ^[Yy]$ ]] && return
-    fi
-    cp "$READY_DIR/CLAUDE.md" "$target"
-    print_done "Created CLAUDE.md"
+    _integrate_or_create "$TARGET_DIR/CLAUDE.md" "$READY_DIR/CLAUDE.md" "CLAUDE.md"
 }
 
 install_antigravity() {
-    local target="$TARGET_DIR/GEMINI.md"
-    if [ -f "$target" ]; then
-        print_warn "GEMINI.md already exists."
-        read -rp "$(echo -e "${YELLOW}Overwrite? [y/N]:${NC} ")" ow
-        [[ ! "$ow" =~ ^[Yy]$ ]] && return
-    fi
-    cp "$READY_DIR/GEMINI.md" "$target"
-    print_done "Created GEMINI.md"
+    _integrate_or_create "$TARGET_DIR/GEMINI.md" "$READY_DIR/GEMINI.md" "GEMINI.md"
 }
 
 install_warp() {
     mkdir -p "$TARGET_DIR/.warp"
-    local target="$TARGET_DIR/.warp/rules.md"
-    if [ -f "$target" ]; then
-        print_warn ".warp/rules.md already exists."
-        read -rp "$(echo -e "${YELLOW}Overwrite? [y/N]:${NC} ")" ow
-        [[ ! "$ow" =~ ^[Yy]$ ]] && return
-    fi
-    cp "$READY_DIR/warp-rules.md" "$target"
-    print_done "Created .warp/rules.md"
+    _integrate_or_create "$TARGET_DIR/.warp/rules.md" "$READY_DIR/warp-rules.md" ".warp/rules.md"
 }
 
 install_codex() {
-    local target="$TARGET_DIR/AGENTS.md"
-    if [ -f "$target" ]; then
-        print_warn "AGENTS.md already exists."
-        read -rp "$(echo -e "${YELLOW}Overwrite? [y/N]:${NC} ")" ow
-        [[ ! "$ow" =~ ^[Yy]$ ]] && return
-    fi
-    cp "$READY_DIR/AGENTS.md" "$target"
-    print_done "Created AGENTS.md"
+    _integrate_or_create "$TARGET_DIR/AGENTS.md" "$READY_DIR/AGENTS.md" "AGENTS.md"
 }
 
 install_windsurf() {
-    local target="$TARGET_DIR/.windsurfrules"
-    if [ -f "$target" ]; then
-        print_warn ".windsurfrules already exists."
-        read -rp "$(echo -e "${YELLOW}Overwrite? [y/N]:${NC} ")" ow
-        [[ ! "$ow" =~ ^[Yy]$ ]] && return
-    fi
-    cp "$READY_DIR/windsurfrules" "$target"
-    print_done "Created .windsurfrules"
+    _integrate_or_create "$TARGET_DIR/.windsurfrules" "$READY_DIR/windsurfrules" ".windsurfrules"
 }
 
 # ── Summary ──────────────────────────────────────
