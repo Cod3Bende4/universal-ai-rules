@@ -47,6 +47,7 @@
 
 ### A06 — Vulnerable Components
 - [ ] Audit all dependencies at install time — `npm audit` / `pip audit` / equivalent
+- [ ] **Dependency Gatekeeper**: Never assume a new dependency is safe. Explicitly scan any newly proposed dependency for known CVEs before adding it to `package.json` or `requirements.txt`.
 - [ ] Use lock files always (package-lock.json, Pipfile.lock, etc.) — ensures reproducibility
 - [ ] Never install packages from unverified sources — check publisher, stars, maintenance
 - [ ] Remove unused dependencies immediately — reduces attack surface
@@ -96,6 +97,15 @@
 - [ ] Verify `.env` is NOT tracked by Git — run `git ls-files .env` to confirm.
 
 ⚠️ WARNING: If you find a hardcoded secret in the codebase, stop everything and flag it to the user immediately. Do not proceed until it is removed and rotated.
+
+---
+
+## 🛑 Human-in-the-Loop Hard Stops (Destructive Actions)
+
+The AI MUST NEVER autonomously execute destructive actions without explicit user consent.
+- [ ] If instructed to delete a database, drop a table, or wipe infra, you must pause and ask: **"Are you absolutely sure?"**
+- [ ] Do not execute the destruction until you receive the exact literal text response: **"YES"** from the user.
+- [ ] This applies to cloud resource teardowns (`terraform destroy`), database truncations, and directory wiping (`rm -rf /` or similar critical paths).
 
 ---
 

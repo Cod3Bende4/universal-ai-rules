@@ -115,6 +115,14 @@ When switching between tasks within a session:
 
 ---
 
+## Cross-Editor State Transfer
+
+If the user is switching from one AI Editor (like Claude Code) to another (like Cursor, Windsurf, or Antigravity):
+- [ ] Export the complete current mental model using the Handoff Entry Template to `dev-log.md`.
+- [ ] Explicitly state: "I have saved the session state to `dev-log.md`. You can open your other editor and instruct the AI to read the latest entry to instantly resume."
+
+---
+
 ## Long-Running Feature Handoff
 
 For features spanning multiple sessions:

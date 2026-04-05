@@ -28,6 +28,7 @@
 - [ ] Run unit tests on every commit — fast feedback loop
 - [ ] Run integration tests on every PR — verify before merge
 - [ ] Run E2E tests before deployment — catch regressions in full flow
+- [ ] **Autonomous Test-Fix Loop**: If a test fails while you (the AI) are running it, do not immediately give up and ask the user. Autonomously read the error, propose a fix, and re-run up to 3 times before requesting human intervention.
 
 ---
 
@@ -40,6 +41,7 @@
 - [ ] All conditional branches — each if/else path exercised
 - [ ] All error handling paths — verify correct error type and message
 - [ ] Edge cases: empty input, null, boundary values, overflow — where bugs hide
+- [ ] **Automatic "Negative" Testing**: Every new API endpoint or critical function must have at least one test specifically designed to fail (e.g., verifying that invalid JSON throws a 400).
 - [ ] Regular expressions — test match and non-match cases
 
 ### What Does NOT Need a Unit Test

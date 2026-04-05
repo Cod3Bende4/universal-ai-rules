@@ -14,9 +14,27 @@
 - [ ] Avoid abbreviations unless universally understood — `id`, `url`, `api` are OK; `usr`, `mgr` are not
 - [ ] Collection names are plural — `users`, `orderItems`, `activeConnections`
 - [ ] Single-item names are singular — `user`, `orderItem`, `connection`
+- [ ] **LSP-First Inquiry**: Never guess what a function signature, interface, or type looks like. Always use a "Find References" or "Go to Definition" tool before writing code that calls external symbols.
 - [ ] No single-letter variables except in loops (i, j, k) or lambdas (x, v) — prevents confusion
 - [ ] Avoid generic names — no `data`, `info`, `temp`, `result`, `stuff` without qualifier
 - [ ] Include units in numeric names — `timeoutMs`, `maxSizeBytes`, `retryDelaySeconds`
+
+### "Show, Don't Tell" Examples
+
+**Bad:**
+```javascript
+function getVal(d, isT) {
+  let res = d.filter(x => x.active === isT);
+  return res;
+}
+```
+
+**Good:**
+```javascript
+function getActiveUsers(users, isActive) {
+  return users.filter(user => user.active === isActive);
+}
+```
 
 ### Language-Specific Conventions
 - [ ] JavaScript/TypeScript: camelCase for vars/functions, PascalCase for classes/components

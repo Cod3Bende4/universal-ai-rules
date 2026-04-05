@@ -9,6 +9,7 @@
 Execute these steps IN ORDER at the beginning of every session:
 
 ### Step 1: Read Project State
+- [ ] **Temporal Awareness**: Explicitly resolve and state today's real-world current date. Do not rely on training cutoff dates for `CHANGELOG.md`, copyright headers, or timestamps.
 - [ ] Check if `dev-log.md` or `CHANGELOG.md` exists — read the last 5 entries
 - [ ] Check if `docs/roadmap.md` or `TODO.md` exists — understand current priorities
 - [ ] Run or review `git log --oneline -10` — see recent changes
@@ -137,5 +138,6 @@ User says "continue" or "resume" or "pick up where we left off"
 - [ ] Summarize what you understood before coding — let the user correct misunderstandings
 - [ ] If the session is a continuation, check task-handoff.md — don't lose context
 - [ ] If the user's task is unclear, ask ONE clarifying question — then proceed
+- [ ] **Context Budgeting**: In long sessions spanning multiple tasks, actively summarize your progress and discard irrelevant file context to keep your working memory lean and focused.
 
 ⚠️ WARNING: Starting to code without understanding the task is the most expensive mistake. 5 minutes of clarification saves hours of rework.
