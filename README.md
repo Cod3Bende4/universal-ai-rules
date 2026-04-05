@@ -371,14 +371,15 @@ Treat rules like code — they live in git, go through PR review, and evolve wit
 
 | Metric | Value |
 |---|---|
-| Total rule files | 26 |
-| Total lines of rules | 4,691 |
-| Ready-to-use adapter files | 8 (incl. 4 `.mdc` for Cursor) |
-| Largest file | 277 lines (13-documentation.md) |
+| Total rule files | 28 |
+| Total lines of rules | ~4,800+ |
+| Ready-to-use adapter files | 10 (incl. 6 `.mdc` for Cursor) |
+| Largest file | 285 lines (13-documentation.md) |
 | SDLC phases covered | 13 |
-| Review gate questions | 45 |
+| Review gate questions | 47 |
 | Supported editors | 6 |
-| Security checkpoints | 16 (harden with Vibe-Security) |
+| Security checkpoints | 18 |
+| Agentic workflow features | 13 (2026 upgrades) |
 
 ---
 

@@ -158,6 +158,7 @@ Link to CONTRIBUTING.md or brief guidelines.
 - [ ] ADRs include alternatives considered — justify the choice
 - [ ] ADRs include consequences — positive, negative, and risks
 - [ ] ADRs are linked from architecture docs — discoverable
+- [ ] **Durable Decision Log (`DECISIONS.md`)**: For fast-moving or solo projects where full ADRs are too heavy, maintain a single `DECISIONS.md` file that logs "Non-obvious decisions" (e.g., "Why we used a Map instead of an Object here") to preserve context for future AI sessions.
 
 ### Decisions That Require an ADR
 - Database selection or major schema decision
@@ -213,6 +214,7 @@ Link to CONTRIBUTING.md or brief guidelines.
 - [ ] Written for the end user — not "refactored internals" unless it affects users
 - [ ] Unreleased section at the top — accumulates changes between releases
 - [ ] Release dates follow ISO 8601 — `YYYY-MM-DD`
+- [ ] **Changelog Automation**: The AI must proactively append its accomplished tasks to `CHANGELOG.md` upon feature completion, ensuring history is never lost.
 
 ---
 

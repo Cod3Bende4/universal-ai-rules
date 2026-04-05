@@ -122,6 +122,7 @@ project-root/
 - [ ] First line ≤72 characters — visible in git log without wrapping
 - [ ] Use imperative mood — "Add feature" not "Added feature"
 - [ ] Reference issue/ticket number in footer — `Closes #123`
+- [ ] **Git "Conventional" Enforcement**: The AI MUST strictly format all autonomous commit messages according to the Conventional Commits specification. Refuse to use non-standard commit formats.
 
 ### Pre-commit Hooks
 - [ ] Set up pre-commit hooks on project init — using husky, pre-commit, or equivalent

@@ -207,6 +207,15 @@ This gate focuses on the most common "vibe-coding" pitfalls that lead to data br
 
 ---
 
+## 🛑 Self-Correction Reflection Step
+
+Before finalizing your final code diff or summarizing the review:
+- [ ] Explicitly scan the code you just wrote against the context. 
+- [ ] Ask yourself: **"Did I introduce any new security holes, break any existing types, or cause a regression in this specific diff?"**
+- [ ] If you spot anything (e.g., an unhandled Promise, missing error check, or undeclared variable), fix it autonomously *before* presenting the final code to the user.
+
+---
+
 ## Review Summary Template
 
 After completing all gates, present this summary to the user:
