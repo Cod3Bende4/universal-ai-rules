@@ -165,18 +165,21 @@ install_suite_directory() {
     print_step "Copying .ai-suite/ into project..."
 
     if [ -d "$TARGET_DIR/.ai-suite" ]; then
-        print_warn ".ai-suite/ already exists in the target project."
-        read -rp "$(echo -e "${YELLOW}Overwrite? [y/N]:${NC} ")" overwrite
-        if [[ "$overwrite" =~ ^[Yy]$ ]]; then
-            rm -rf "$TARGET_DIR/.ai-suite"
-        else
-            print_info "Keeping existing .ai-suite/ directory."
+        print_warn ".ai-suite/ already exists — running in UPDATE mode."
+        print_info "Standard suite files will be updated. Your custom rule files will be preserved."
+        echo ""
+        read -rp "$(echo -e "${YELLOW}Proceed with update? [Y/n]:${NC} ")" overwrite
+        if [[ "$overwrite" =~ ^[Nn]$ ]]; then
+            print_info "Skipping .ai-suite/ update."
             return
         fi
+        # Safe merge: copies into existing dir, overwrites standard files, keeps custom files
+        cp -r "$SUITE_DIR/." "$TARGET_DIR/.ai-suite/"
+        print_done ".ai-suite/ updated (merged — custom files preserved)"
+    else
+        cp -r "$SUITE_DIR" "$TARGET_DIR/.ai-suite"
+        print_done ".ai-suite/ installed"
     fi
-
-    cp -r "$SUITE_DIR" "$TARGET_DIR/.ai-suite"
-    print_done ".ai-suite/ installed"
 }
 
 install_cursor_single() {
