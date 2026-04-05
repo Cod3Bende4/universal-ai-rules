@@ -229,6 +229,20 @@ GET /api/v1/users?search=john
 
 ---
 
+## Sensitive API & Payment Security
+
+Apps that handle money or expensive AI calls must never trust client-provided data for these operations.
+
+- [ ] **Server-Side Price Lookup** — Never take a `price` or `amount` from the client request. Look up the price in your database or Stripe dashboard using a `productId` or `priceId`.
+- [ ] **Webhook Signature Verification** — Always verify the signature of webhooks (Stripe, LemonSqueezy, etc.) before fulfilling an order.
+- [ ] **Subscription Status Gate** — Validate subscription status server-side before allowing access to premium features or AI endpoints.
+- [ ] **Backend-Only AI Calls** — Never call AI providers (OpenAI, Anthropic, Vertex) directly from the frontend. Proxy all calls through your backend to hide API keys and enforce rate limits.
+- [ ] **No Client-Side Secrets** — Ensure no `STRIPE_SECRET_KEY` or `OPENAI_API_KEY` is prefixed with `NEXT_PUBLIC_` or `VITE_`.
+
+⚠️ WARNING: A common hack is to intercept a checkout request and change the price to $0.01. If your backend doesn't re-verify the price, the hacker gets your product for free.
+
+---
+
 ## 🛑 STOP: API Design Gate
 
 Before implementing any endpoint:
@@ -248,5 +262,7 @@ Before implementing any endpoint:
 - [ ] Authorization checked — user can only access their own resources
 - [ ] Input validated against contract — reject unexpected fields, enforce types/lengths
 - [ ] Rate limiting applied — prevent abuse on all endpoints
+- [ ] **Server-side price verification** — for all payment-related endpoints
+- [ ] **Backend proxying** — for all sensitive 3rd-party API calls (AI, Email, Payments)
 - [ ] CORS configured correctly — allowlisted origins only, not wildcard in production
 - [ ] Response does not leak internal data — no debug info, no stack traces, no internal IDs

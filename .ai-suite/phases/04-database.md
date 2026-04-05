@@ -136,12 +136,30 @@ Before applying any schema change:
 
 ---
 
+---
+
+## Access Control (RLS & Security Rules)
+
+This is the #1 source of critical vulnerabilities in "vibe-coded" apps. AI assistants routinely generate database schemas without proper access control.
+
+- [ ] **Enable RLS on EVERY Table** — In Supabase/PostgreSQL, run `ALTER TABLE public.<table> ENABLE ROW LEVEL SECURITY;` on every table.
+- [ ] **Scope to Owner** — Never use `USING (true)` or `auth.uid() IS NOT NULL` for private data. Always check `USING (auth.uid() = user_id)`.
+- [ ] **Isolate Sensitive Fields** — Never put `is_admin`, `credits`, or `subscription_status` on a table the user has `UPDATE` permission for. 
+- [ ] **Column-Level Privileges** — Revoke `UPDATE` on sensitive columns: `GRANT SELECT, UPDATE (display_name, avatar_url) ON profiles TO authenticated;`.
+- [ ] **Bucket Policies** — Storage buckets must have their own policies scoped to the user's folder/UID.
+- [ ] **Junction Table RLS** — Ensure many-to-many junction tables have their own RLS policies.
+
+⚠️ WARNING: A table with RLS enabled but no policies defined will block all access. This is safer than no RLS, but will cause "data not found" bugs.
+
+---
+
 ## Security Checkpoint
 
+- [ ] All tables have Row-Level Security (RLS) or equivalent access rules enabled.
+- [ ] No sensitive fields (admin/billing) are editable by the user directly.
 - [ ] All queries use parameterized statements — no string concatenation
 - [ ] Database credentials in environment variables — not in code or config files
 - [ ] Database accessible only from application servers — not from public internet
-- [ ] Separate read-only credentials for reporting — least privilege
-- [ ] PII columns identified and documented — encryption or masking plan exists
-- [ ] Audit logging enabled for sensitive tables — who changed what and when
 - [ ] Connection strings use SSL/TLS — no unencrypted database connections
+- [ ] Separate read-only credentials for reporting — least privilege
+- [ ] Audit logging enabled for sensitive tables — who changed what and when

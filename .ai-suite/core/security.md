@@ -90,10 +90,23 @@
 - [ ] Use a secrets manager in production (AWS Secrets Manager, Vault, etc.) — not env vars in prod
 - [ ] Rotate secrets on a defined schedule — 90 days maximum for production credentials
 - [ ] Revoke and rotate immediately if a secret is exposed — treat as a P0 incident
-- [ ] Different secrets for each environment (dev, staging, prod) — never share across environments
+- [ ] Never share secrets across environments (dev, staging, prod) — ensures blast radius is contained
 - [ ] Audit secret access logs regularly — detect unauthorized access
+- [ ] Scan for "Client-Side" secret exposure — check if secrets are prefixed with `NEXT_PUBLIC_`, `VITE_`, or `EXPO_PUBLIC_` unnecessarily.
+- [ ] Verify `.env` is NOT tracked by Git — run `git ls-files .env` to confirm.
 
 ⚠️ WARNING: If you find a hardcoded secret in the codebase, stop everything and flag it to the user immediately. Do not proceed until it is removed and rotated.
+
+---
+
+## The "Vibe Coding" Security Axiom
+
+**NEVER TRUST THE CLIENT.** Every price, user ID, role, subscription status, and rate limit counter must be validated or enforced server-side. If it exists only in the browser, mobile bundle, or request body, an attacker controls it.
+
+- [ ] Does this action rely on a client-provided `price`, `role`, or `userId`? If so, look it up server-side.
+- [ ] Is sensitive logic (like calculating discounts or checking subscription status) happening only in the UI/frontend? Move it to a secure backend/function.
+- [ ] Is an API key (OpenAI, Stripe, SendGrid) exposed for direct calls from the client? Proxy these through your own backend.
+- [ ] Are rate limits only enforced via `setTimeout` or UI state? Use Redis, database-based, or IP-based limits on the backend.
 
 ---
 
@@ -136,7 +149,9 @@ Before writing ANY code that touches authentication, authorization, user data, e
 7. [ ] Am I using HTTPS and secure headers?
 8. [ ] Have I checked for injection vectors (SQL, XSS, command, LDAP)?
 9. [ ] Am I handling errors without exposing internal details to the user?
-10. [ ] Have I considered rate-limiting and abuse prevention for this feature?
+10. [ ] Have I considered rate-limiting and budget protection for this feature?
+
+🛑 CRITICAL AUDIT: Could a malicious user bypass this logic by manually calling the API or modifying the frontend bundle? (If "Yes," the design is insecure).
 
 ⚠️ WARNING: If ANY answer is NO or UNSURE, do NOT proceed. Fix the issue first, or flag it to the user with a specific recommendation.
 

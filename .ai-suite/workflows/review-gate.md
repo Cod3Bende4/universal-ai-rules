@@ -181,6 +181,32 @@ Answer each question for the code you are about to submit:
 
 ---
 
+## 🛑 Gate 6: Vibe Security & Financial Audit (5 Questions)
+
+This gate focuses on the most common "vibe-coding" pitfalls that lead to data breaches or financial loss.
+
+1. [ ] **Could a user give themselves premium/admin access?**
+   - Check: RLS policies on `profiles`/`users` tables; server-side role validation.
+   - If NO: Isolate sensitive fields or add server-side checks.
+
+2. [ ] **Could a user buy something at the wrong price?**
+   - Check: Stripe/Payment endpoints for client-side `price` or `amount`.
+   - If NO: Look up price server-side using a `productId`.
+
+3. [ ] **Could a user rack up a $10,000 AI bill?**
+   - Check: Rate limits on AI endpoints; backend proxying of AI keys.
+   - If NO: Add per-user quotas and IP-based rate limiting.
+
+4. [ ] **Are there any "Client-Side" secret leaks?**
+   - Check: Environment variables prefixed with `NEXT_PUBLIC_`, `VITE_`, or `EXPO_PUBLIC_`. 
+   - If YES: Ensure these are only for public config, NOT private keys.
+
+5. [ ] **Is Row-Level Security (RLS) enabled on ALL new tables?**
+   - Check: Migration files for `ENABLE ROW LEVEL SECURITY`.
+   - If NO: Add RLS enablement to the migration.
+
+---
+
 ## Review Summary Template
 
 After completing all gates, present this summary to the user:
@@ -200,6 +226,9 @@ After completing all gates, present this summary to the user:
 ### Performance Gate: [PASS ✅ / ISSUES ⚠️]
 [List any issues found]
 
+### Vibe Security & Financial Gate: [PASS ✅ / ISSUES ⚠️]
+[List any issues found]
+
 ### Documentation Gate: [PASS ✅ / ISSUES ⚠️]
 [List any issues found]
 
@@ -213,6 +242,7 @@ After completing all gates, present this summary to the user:
 - If 0 gates fail → Deliver with confidence
 - If 1-2 minor items fail → Flag to user, deliver with caveats
 - If any SECURITY gate item fails → DO NOT deliver until fixed
+- If any VIBE SECURITY / FINANCIAL gate item fails → DO NOT deliver until fixed
 - If 3+ items fail across gates → Recommend fixing before delivery
 - If testing gate fails (tests don't pass) → DO NOT deliver, fix tests first
 

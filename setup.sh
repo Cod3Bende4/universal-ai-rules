@@ -269,7 +269,7 @@ print_summary() {
     echo -e "  ${BOLD}Editors:${NC} ${SELECTED_IDES[*]}"
     echo ""
     echo -e "  ${BOLD}Files installed:${NC}"
-    echo -e "  ${DIM}├── .ai-suite/          (26 rule files — the brain)${NC}"
+    echo -e "  ${DIM}├── .ai-suite/          (36+ rule files — the hardened brain)${NC}"
 
     for ide in "${SELECTED_IDES[@]}"; do
         case "$ide" in

@@ -19,8 +19,9 @@ This suite solves that by giving the AI a **structured, checklist-based rule sys
 | AI hardcodes a database password | ✅ Security gate blocks it — must use env vars |
 | AI skips input validation | ✅ Checklist requires validation at every boundary |
 | AI writes 200-line functions | ✅ Quality rules enforce max 20 lines |
+| AI leaves Supabase RLS disabled | ✅ **Hardened RLS checklist** ensures data isolation |
 | Context lost between sessions | ✅ Task handoff captures exact state and next steps |
-| AI ships code without review | ✅ 40-question review gate runs before every delivery |
+| AI ships code without review | ✅ **45-question review gate** runs before every delivery |
 | Different rules in different editors | ✅ One canonical source, thin adapters per editor |
 
 ---
@@ -136,6 +137,7 @@ The AI must pass through verification gates before delivering code:
 
 ```
 🛑 Security Gate    → 10 binary questions (blocking — must pass)
+🛑 Vibe Security Audit →  5 binary questions (blocking — owner-only data)
 🛑 Quality Gate     → 10 binary questions
 🛑 Testing Gate     → 10 binary questions
 🛑 Performance Gate →  5 binary questions
@@ -370,13 +372,13 @@ Treat rules like code — they live in git, go through PR review, and evolve wit
 | Metric | Value |
 |---|---|
 | Total rule files | 26 |
-| Total lines of rules | 4,389 |
+| Total lines of rules | 4,691 |
 | Ready-to-use adapter files | 8 (incl. 4 `.mdc` for Cursor) |
 | Largest file | 277 lines (13-documentation.md) |
 | SDLC phases covered | 13 |
-| Review gate questions | 40 |
+| Review gate questions | 45 |
 | Supported editors | 6 |
-| Security checkpoints | 16 (one per phase + core + workflows) |
+| Security checkpoints | 16 (harden with Vibe-Security) |
 
 ---
 

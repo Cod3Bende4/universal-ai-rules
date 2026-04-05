@@ -162,6 +162,21 @@
 
 ---
 
+## Cost & Budget Limits (AI / Usage)
+
+In modern "vibe-coded" apps, performance is directly linked to cost. Unbounded AI or API usage can lead to massive financial losses (DoS via billing).
+
+- [ ] **Establish Budget Caps** — Configure hard billing limits in GCP/OpenAI/Stripe dashboards.
+- [ ] **Usage Alerts** — Set up notifications at 50%, 75%, and 90% of your monthly budget.
+- [ ] **Per-User Quotas** — Enforce a maximum number of AI generations per user per day/month.
+- [ ] **IP-Based Global Limits** — Add a secondary layer of rate limiting based on IP to stop botnets even if they create multiple accounts.
+- [ ] **Model Switching** — Fallback to cheaper models (e.g., GPT-4o-mini, Gemini Flash) when a user approaches their limit.
+- [ ] **Automatic Service Cutoff** — If a cost-threshold is breached, gracefully disable only the expensive features, not the whole app.
+
+⚠️ WARNING: A single leaked API key or a missing rate limit on an AI endpoint can rack up a $10,000+ bill in hours. Budget caps are your "financial circuit breaker."
+
+---
+
 ## 🛑 STOP: Performance Gate
 
 Before deploying performance-sensitive changes:
@@ -177,6 +192,8 @@ Before deploying performance-sensitive changes:
 ## Security Checkpoint
 
 - [ ] Rate limiting prevents resource exhaustion — all endpoints
+- [ ] **Budget caps and alerts** are configured in all 3rd-party provider dashboards
+- [ ] **Usage quotas** are enforced server-side for all expensive AI/API operations
 - [ ] Request body size limits prevent memory attacks — no unbounded input
 - [ ] Query complexity limits prevent DoS — no arbitrarily expensive queries
 - [ ] Caching respects authorization — one user's cached data is not visible to another
